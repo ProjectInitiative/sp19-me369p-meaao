@@ -1,13 +1,16 @@
 from django.db import models
+from django.conf import settings
 
-
-class Users(models.Model):
-    username = models.CharField(max_length = 255)
-    password = models.CharField(max_length = 255)
     
-class Sessions(models.Model):
-    user_id = models.ForeignKey(Users, on_delete = models.CASCADE)
-    created = models.DateField()
-    last_seen = models.DateField()
-    
+class  Walkins(models.Model):
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.PROTECT)
+    advisor_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.PROTECT)
+    order = models.IntegerField()
+    comments = models.TextField()
 
+class Contact(models.Model):
+    recipient = models.CharField(max_length = 255)
+    user_name = models.CharField(max_length = 255)
+    user_eid = models.CharField(max_length = 255)
+    user_email = models.CharField(max_length = 255)
+    message = models.TextField()
