@@ -31,6 +31,8 @@ ALLOWED_HOSTS = [
     '.herokuapp.com'
 ]
 
+LOGIN_URL = '/signin'
+
 
 # Application definition
 
