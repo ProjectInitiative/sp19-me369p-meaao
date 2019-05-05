@@ -1,6 +1,9 @@
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import render
+
+from .models import Walkin, Contact
 
 
 def index(request):
-    return HttpResponse('Index')
+    context = {}
+    return render(request, 'index.html', context)

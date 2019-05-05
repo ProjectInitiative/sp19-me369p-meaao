@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MEAAO</title>
+    {% include 'bootstrap.html' %}
+    <style type="text/css">
+    .jumbotron {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .jumbotron .content {
+        color: #fff;
+        padding: 8em 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    .jumbotron .content h1 {
+        color: #fff;
+    }
+
+    .jumbotron .video {
+        left: 0;
+        height: 100%;
+        min-height: 100%;
+        min-width: 100%;
+        position: absolute;
+        top: 0;
+        z-index: 1;
+    }
+
+    .jumbotron .video::before {
+        background: linear-gradient(to bottom, #bf5700aa, #bf570044);
+        content: "";
+        display: block;
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+    </style>
+</head>
+<body class="pb-5">
+{% include 'navbar.html' %}
+<div class="jumbotron">
+    <div class="content">
+        <h1>Academic Advising</h1>
+        <p class="lead">We are here to direct you to wherever you need to go &ndash; whether to sign in for academic advising or to provide information to other helpful resources</p>
+        <p><b class="font-weight-bold">Disclaimer:</b> This site is a student project and is not officially affiliated with The University of Texas at Austin, The Walker Department of Mechanical Engineering, or the Mechanical Engineering Academic Advising Office</p>
+        <a href="./resources" class="btn btn-primary">Resources</a>
+    </div>
+    <div class="video">
+        <video autoplay="true" loop="true">
+            <source src="http://www.engr.utexas.edu/images/banners/home-landing-video.mp4" type="video/mp4">
+        </video>
+    </div>
+</div>
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="https://www.youtube-nocookie.com/embed/jnOiJSnjols?modestbranding=1&fs=0&color=white" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+        <div class="col-md-6">
+            The University of Texas at Austin provides public access to a first-class education and the tools of discovery. This has resulted in a culture of ambition and leadership, where physical scale is matched by bold goals and achievements.<br><br>
+            The Cockrell School of Engineering at The University of Texas at Austin is a top-ranked center of engineering education and research. Comprising renowned faculty, researchers and thought leaders, Texas Engineering is committed to driving economic progress and solving the most pressing problems facing society. Focusing on a multidisciplinary, hands-on approach to learning, we educate and develop you to think creatively, work collaboratively, advance industries and improve lives throughout the world.
+        </div>
+    </div>
+</div>
+<footer class="fixed-bottom bg-light pt-3 pb-3 pl-4 pr-4 border">
+    <p class="font-weight-bold mb-0">May 5, 2019</p>
+    <a href="mailto:advising@me.utexas.edu">The Walker Department of Mechanical Engineering Advising Team</a>
+</footer>
+</body>
+</html>
