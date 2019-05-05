@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Walkin, Contact
+
+
+admin.site.register(Walkin)
+admin.site.register(Contact)
