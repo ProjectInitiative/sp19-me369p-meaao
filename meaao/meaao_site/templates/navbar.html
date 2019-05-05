@@ -1,12 +1,12 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand d-none d-lg-flex" href="./">
-        <img src="./static/img/logo.min.svg" alt="The University of Texas at Austin Shield" />
+    <a class="navbar-brand d-none d-lg-flex" href="/">
+        <img src="/static/img/logo.min.svg" alt="The University of Texas at Austin Shield" />
         <div>
             <span>The University of Texas at Austin</span><br>
             <span class="subtitle text-muted font-weight-normal">Mechanical Engineering Academic Advising Office</span>
         </div>
     </a>
-    <a class="navbar-brand d-flex d-lg-none" href="./">
+    <a class="navbar-brand d-flex d-lg-none" href="/">
         UT Austin
     </a>
 
@@ -18,25 +18,25 @@
     <div class="collapse navbar-collapse text-nowrap" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="./advisors">Advisors</a>
+                <a class="nav-link" href="/advisors">Advisors</a>
             </li>
 {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="./walkins">Walk-Ins</a>
+                <a class="nav-link" href="/walkins">Walk-Ins</a>
             </li>
 {% endif %}
             <li class="nav-item">
-                <a class="nav-link" href="./forms">Forms</a>
+                <a class="nav-link" href="/forms">Forms</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./resources">Resources</a>
+                <a class="nav-link" href="/resources">Resources</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./contact">Contact Us</a>
+                <a class="nav-link" href="/contact">Contact Us</a>
             </li>
 {% if user.is_authenticated %}
             <li class="nav-item d-block d-lg-none">
-                <a class="nav-link" href="./signin">Sign In</a>
+                <a class="nav-link" href="/signin">Sign In</a>
             </li>
 {% endif %}
         </ul>
@@ -44,12 +44,12 @@
         <div class="dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.username }}</a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="./account">My Account</a>
-                <a class="dropdown-item" href="./signout">Sign Out</a>
+                <a class="dropdown-item" href="/account">My Account</a>
+                <a class="dropdown-item" href="/signout">Sign Out</a>
             </div>
         </div>
 {% else %}
-        <a class="btn btn-primary d-none d-lg-block" href="./signin">Sign In</a>
+        <a class="btn btn-primary d-none d-lg-block" href="/signin">Sign In</a>
 {% endif %}
     </div>
     <style type="text/css">
