@@ -106,8 +106,30 @@ def advisors(request):
 
 def contact(request):
     """
-    Renders the contact page template
+    Renders the contact page template and handles backend logic
     """
+
+    if has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST):
+        #Creates a new contact object for Django to stage for SQL
+        contact = Contact(
+            recipient=request.POST['recipient'],
+            user_name=request.POST['name'],
+            user_eid=request.POST['eid'],
+            user_email=request.POST['email'],
+            message=request.POST['message'])
+        
+        #SQL equivalent of EXECUTE
+        contact.save()
+
+    # Delete message
+    if 'delete_id' in request.POST and request.user.has_perms('contact_accessother'):
+        Contact.objects.filter(id=id).delete()
+
+    # Retrieve message
+    messages=[]
+    if request.user.has_perms('contact_accessother'):
+        messages = Contact.objects
+
     return render(request, "contact.html", {})
 
 
@@ -129,6 +151,6 @@ def resources(request):
 
 def has_keys(needles, haystack):
     """
-    Searches for the existance of a set of needles in a haystack
+    Searches for the existence of a set of needles in a haystack
     """
     return all(item in haystack for item in needles)
