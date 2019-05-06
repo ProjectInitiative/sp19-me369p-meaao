@@ -59,6 +59,36 @@ def register(request):
     })
 
 
+def account(request):
+    """
+    Renders the register page template and handles backend logic
+    """
+    account_state = 'none'
+    if request.user.is_authenticated and 'action' in request.POST:
+        account_state = 'error'
+        if (request.POST['action'] == 'change-password'
+                and has_keys(['current-password', 'new-password1', 'new-password2'], request.POST)
+                and request.POST['new-password1'] == request.POST['new-password2']
+                and request.POST['new-password1'] != request.POST['current-password']
+                and request.user.check_password(request.POST['current-password'])):
+            request.user.set_password(request.POST['new-password1'])
+            request.user.save()
+            account_state = 'success_password'
+        if request.POST['action'] == 'change-email' and 'email' in request.POST:
+            request.user.email = request.POST['email']
+            request.user.save()
+            account_state = 'success_email'
+        elif (request.POST['action'] == 'change-name'
+                and has_keys(['first-name', 'last-name'], request.POST)):
+            request.user.first_name = request.POST['first-name']
+            request.user.last_name = request.POST['last-name']
+            request.user.save()
+            account_state = 'success_name'
+    return render(request, 'account.html', {
+        'account_state': account_state
+    })
+
+
 def signout(request):
     """
     Renders the signout page template

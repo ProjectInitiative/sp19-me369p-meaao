@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MEAAO</title>
+    {% include 'bootstrap.html' %}
+    <script src="/static/js/account.js" defer></script>
+</head>
+<body class="pb-5">
+{% include 'navbar.html' %}
+{% if account_state == 'success_password' %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        Password changed successfully
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% elif account_state == 'success_email' %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        Email updated successfully
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% elif account_state == 'success_name' %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        Name changed successfully
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% elif account_state == 'error' %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        Failed to update user
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}
+    <h1 class="mx-auto col-lg-3 mt-5">My Account</h1>
+    <table class="table table-sm mx-auto col-lg-3">
+        <tbody>
+            <tr>
+                <th class="font-weight-bold">UT EID</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th class="font-weight-bold">Created</th>
+                <td>{{ user.date_joined }}</td>
+            </tr>
+            <tr>
+                <th class="font-weight-bold">Last Seen</th>
+                <td>{{ user.last_login }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <form action="" method="POST" class="mx-auto col-lg-3 mt-5">
+        {% csrf_token %}
+        <h2>Update Name</h2>
+        <input type="hidden" name="action" value="change-name" />
+        <div class="form-group">
+            <label for="first-name">First Name</label>
+            <input type="text" name="first-name" id="first-name" class="form-control" value="{{ user.first_name }}" placeholder="John" maxlength="30" required />
+        </div>
+        <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" name="last-name" id="last-name" class="form-control" value="{{ user.last_name }}" placeholder="John" maxlength="150" required />
+        </div>
+        <input type="submit" value="Update Name" class="btn btn-primary" />
+    </form>
+    <form action="" method="POST" class="mx-auto col-lg-3 mt-5">
+        {% csrf_token %}
+        <h2>Change Email</h2>
+        <input type="hidden" name="action" value="change-email" />
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}" placeholder="johndoe@utexas.edu" required />
+        </div>
+        <input type="submit" value="Update Name" class="btn btn-primary" />
+    </form>
+    <form id="change-password" action="" method="POST" class="mx-auto col-lg-3 mt-5">
+        {% csrf_token %}
+        <h2>Change Password</h2>
+        <input type="hidden" name="action" value="change-password" />
+        <div class="form-group">
+            <label for="current-password">Current Password</label>
+            <input type="password" name="current-password" id="current-password" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="new-password1">New Password</label>
+            <input type="password" name="new-password1" id="new-password1" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="new-password2">Confirm New Password</label>
+            <input type="password" name="new-password2" id="new-password2" class="form-control" required />
+        </div>
+        <input type="submit" value="Change Password" class="btn btn-primary" />
+    </form>
+</body>
+</html>
