@@ -10,6 +10,10 @@
 **Team Members:** Andrew Gu, Annie Tsai, Kyle Petryszak  
 **Assignment:** Final Project
 
+## Wiki
+
+For end user information please click [here](https://github.com/a-gu/sp19-me369p-meaao/wiki).
+
 ## Objective
 
 Our team is planning on creating a website for the Mechanical Engineering Academic Advising Office (MEAAO). The Python package Django was chosen because the class is based upon learning Python. As students at The University of Texas at Austin, the members of our team became aware of the office's need for a way to better communicate with students, and to keep track of events using a sort of "ticketing" system.
