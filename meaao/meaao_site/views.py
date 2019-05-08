@@ -15,8 +15,7 @@ def index(request):
     """
     Renders the index page template
     """
-    context = {}
-    return render(request, 'index.html', context)
+    return render(request, 'index.html', {})
 
 
 def signin(request):
@@ -110,27 +109,28 @@ def contact(request):
     """
 
     if has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST):
-        #Creates a new contact object for Django to stage for SQL
+        # Adds new contact to database
         contact = Contact(
             recipient=request.POST['recipient'],
             user_name=request.POST['name'],
             user_eid=request.POST['eid'],
             user_email=request.POST['email'],
-            message=request.POST['message'])
-        
-        #SQL equivalent of EXECUTE
+            message=request.POST['message']
+        )
         contact.save()
 
     # Delete message
     if 'delete_id' in request.POST and request.user.has_perms('contact_accessother'):
         Contact.objects.filter(id=id).delete()
 
-    # Retrieve message
-    messages=[]
+    # Retrieve messages
+    messages = []
     if request.user.has_perms('contact_accessother'):
         messages = Contact.objects
 
-    return render(request, "contact.html", {})
+    return render(request, "contact.html", {
+        'messages': messages
+    })
 
 
 def forms(request):

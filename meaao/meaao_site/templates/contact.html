@@ -18,7 +18,7 @@
     <h1>Contact Us</h1>
     <p>The Walker Department of Mechanical Engineering advising team helps current students navigate through their degree plans and the transition into college life.</p>
     <p class="mb-4">If what you're looking for can't be found in <a href="./resources">resources</a>, you can reach out to one of the <a href="./advisors">advisors</a> using the contact form below. For general inquiries, you may receive a faster response if you select "Anyone" to be the recipient, which will reach the advisors if it can't be answered by others in the office.</p>
-{% if request.user.has_perms('contact_accessother') and messages.len > 0 %}
+{% if messages.len > 0 %}
     <table id="messages" class="table table-hover table-responsive">
         <thead class="thead-dark">
             <tr>
@@ -49,6 +49,7 @@
     </table>
 {% endif %}
     <form action="" method="POST">
+        {% csrf_token %}
         <div class="form-group">
             <label for="recipient">Recipient</label>
             <select name="recipient" id="recipient" class="form-control">
@@ -67,8 +68,8 @@
                 <input type="text" name="eid" id="eid" class="form-control" required />
             </div>
 {% else %}
-            <input type="hidden" name="name" value="<?php echo(htmlspecialchars($AUTHENTICATED_USER['name'])); ?>" />
-            <input type="hidden" name="eid" value="<?php echo(htmlspecialchars($AUTHENTICATED_USER['eid'])); ?>" />
+            <input type="hidden" name="name" value="{{ user.get_full_name }}" />
+            <input type="hidden" name="eid" value="{{ user.username }}" />
 {% endif %}
         </div>
         <div class="form-group">
