@@ -107,26 +107,27 @@ def contact(request):
     """
     Renders the contact page template and handles backend logic
     """
-    if (has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST)
-            and request.user.has_perm('meaao_site.add_contact')):
-        # Adds new message to database
-        message = Contact(
+
+    if has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST):
+        # Creates a new contact object for Django to stage for SQL
+        contact = Contact(
             recipient=request.POST['recipient'],
             user_name=request.POST['name'],
             user_eid=request.POST['eid'],
             user_email=request.POST['email'],
-            message=request.POST['message']
-        )
-        message.save()
+            message=request.POST['message'])
+
+        # SQL equivalent of EXECUTE
+        contact.save()
 
     # Delete message
     if 'delete_id' in request.POST and request.user.has_perm('meaao_site.delete_contact'):
         Contact.objects.filter(id=request.POST['delete_id']).delete()
 
-    # Retrieve messages
+    # Retrieve message
     messages = []
-    if request.user.has_perm('meaao_site.view_contact'):
-        messages = Contact.objects.all()
+    if request.user.has_perms('contact_accessother'):
+        messages = Contact.objects
 
     return render(request, "contact.html", {
         'messages': messages
@@ -145,6 +146,14 @@ def resources(request):
     Renders the resources page template
     """
     return render(request, "resources.html", {})
+
+def walkins(request):
+    """
+    Renders the walkins page template and handles the backend logic
+    """
+
+    # return render(request, "walkins.html")
+    pass
 
 
 # Utility Functions
