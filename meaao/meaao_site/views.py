@@ -107,8 +107,8 @@ def contact(request):
     """
     Renders the contact page template and handles backend logic
     """
-
-    if has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST):
+    if (has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST)
+            and request.user.has_perm('meaao_site.add_contact')):
         # Adds new message to database
         message = Contact(
             recipient=request.POST['recipient'],
@@ -120,13 +120,13 @@ def contact(request):
         message.save()
 
     # Delete message
-    if 'delete_id' in request.POST and request.user.has_perms('contact_accessother'):
-        Contact.objects.filter(id=id).delete()
+    if 'delete_id' in request.POST and request.user.has_perm('meaao_site.delete_contact'):
+        Contact.objects.filter(id=request.POST['delete_id']).delete()
 
     # Retrieve messages
     messages = []
-    if request.user.has_perms('contact_accessother'):
-        messages = Contact.objects
+    if request.user.has_perm('meaao_site.view_contact'):
+        messages = Contact.objects.all()
 
     return render(request, "contact.html", {
         'messages': messages
