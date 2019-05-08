@@ -78,7 +78,7 @@ def account(request):
             request.user.save()
             account_state = 'success_email'
         elif (request.POST['action'] == 'change-name'
-                and has_keys(['first-name', 'last-name'], request.POST)):
+              and has_keys(['first-name', 'last-name'], request.POST)):
             request.user.first_name = request.POST['first-name']
             request.user.last_name = request.POST['last-name']
             request.user.save()
@@ -109,15 +109,15 @@ def contact(request):
     """
 
     if has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST):
-        # Adds new contact to database
-        contact = Contact(
+        # Adds new message to database
+        message = Contact(
             recipient=request.POST['recipient'],
             user_name=request.POST['name'],
             user_eid=request.POST['eid'],
             user_email=request.POST['email'],
             message=request.POST['message']
         )
-        contact.save()
+        message.save()
 
     # Delete message
     if 'delete_id' in request.POST and request.user.has_perms('contact_accessother'):
