@@ -1,3 +1,7 @@
+"""
+URL routing for web site, connects to views
+"""
+
 from django.urls import path
 
 from . import views

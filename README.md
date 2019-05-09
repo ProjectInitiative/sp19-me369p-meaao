@@ -82,13 +82,17 @@ Our team expects to share and interchange roles and responsibilities, although t
     >For local development, a `.env` file may be used (do not add to VCS)
 
     - `SECRET_KEY` the [secret key](https://docs.djangoproject.com/en/2.2/ref/settings/#secret-key) used by Django primarily for signing and encrypting data
-    - `DATABASE_URL` if not already set, points to the SQL server instance and includes authentication details so Django can connect
+    - `DATABASE_URL` if not already set, points to the SQL server instance and includes authentication details so Django can connect (standard DBURL format)
 
 ## Running Locally
 
 >These steps assume that [Python](https://www.python.org/), [pipenv](https://pypi.org/project/pipenv/), and the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)  are installed
 
  1. Follow most of the steps from "[Installation](#installation)", although a local SQL server may be used, or the `DATABASES` variable in [settings.py](./meaao/meaao/settings.py) may be changed to use a SQLite file
+
+    - Steps for creating or attaching a Heroku remote are optional
+    - It is important to follow the instructions in "Set up environment variables", or Django won't be configured with a database
+    - The `PORT` environment variable must also be set in the `.env` file
 
  2. Install dependencies and launch a shell with the Python interpreter in the virtual environment
 

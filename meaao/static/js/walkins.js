@@ -22,6 +22,7 @@ const app = new Vue({
         data.set(param, params[param])
       }
       let headers = new Headers();
+      // @ts-ignore
       headers.append('X-CSRFToken', document.querySelector('input[name="csrfmiddlewaretoken"]').value)
       window.fetch('/walkins/', {
         method: 'POST',
@@ -52,6 +53,7 @@ const app = new Vue({
         data.set(params[param], walkin[params[param]])
       }
       let headers = new Headers();
+      // @ts-ignore
       headers.append('X-CSRFToken', document.querySelector('input[name="csrfmiddlewaretoken"]').value)
       window.fetch('/walkins/', {
         method: 'POST',
@@ -69,6 +71,8 @@ const app = new Vue({
   }
 })
 
+// @ts-ignore
+var $ = window.$ || $;
 $(document).ready(function () {
   let templateRender = state => {
     if (!state.id)  return state.text
