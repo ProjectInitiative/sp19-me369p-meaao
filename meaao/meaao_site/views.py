@@ -222,7 +222,7 @@ def walkins(request):
             user=User.objects.get(id=request.POST['student'] if request.user.has_perm('meaao_site.view_walkin') else request.user.id),
             advisor=User.objects.get(id=request.POST['advisor']),
             comments=request.POST['comments'],
-            order=Walkin.objects.latest('order').order + 1
+            order=(Walkin.objects.latest('order').order if Walkin.objects.exists() else -1)  + 1
         )
         new_walkin.save()
 
