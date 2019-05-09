@@ -27,9 +27,9 @@ Our team is planning on creating a website for the Mechanical Engineering Academ
 
 | Member | Roles |
 | --- | --- |
-| Andrew Gu | frontend/backend integration, backend logic, code review |
-| Annie Tsai | project management and direction, unauthenticated pages |
-| Kyle Petryszak | coordination with MEAAO, frontend UI, authenticated pages |
+| Andrew Gu | views, integration, server |
+| Annie Tsai | front end, routing, architecture |
+| Kyle Petryszak | models, integration, views |
 
 Our team expects to share and interchange roles and responsibilities, although the expected primary roles of each team member are tabulated above.
 
