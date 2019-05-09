@@ -126,7 +126,7 @@ def contact(request):
     # Retrieve message
     messages = []
     if request.user.has_perm('meaao_site.view_contact'):
-        messages = Contact.objects
+        messages = Contact.objects.all()
 
     return render(request, "contact.html", {
         'messages': messages
