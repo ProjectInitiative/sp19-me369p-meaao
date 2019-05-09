@@ -2,10 +2,13 @@
 Renders HTML templates and handles backend logic for site
 """
 
+import json
+import nanoid
 import re
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.db.models import F, Q, Max
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from .models import Walkin, Contact
@@ -109,15 +112,13 @@ def contact(request):
     """
 
     if has_keys(['recipient', 'name', 'eid', 'email', 'message'], request.POST):
-        # Creates a new contact object for Django to stage for SQL
+        # Creates a new contact
         contact = Contact(
             recipient=request.POST['recipient'],
             user_name=request.POST['name'],
             user_eid=request.POST['eid'],
             user_email=request.POST['email'],
             message=request.POST['message'])
-
-        # SQL equivalent of EXECUTE
         contact.save()
 
     # Delete message
@@ -126,7 +127,7 @@ def contact(request):
 
     # Retrieve message
     messages = []
-    if request.user.has_perms('contact_accessother'):
+    if request.user.has_perm('meaao_site.view_contact'):
         messages = Contact.objects
 
     return render(request, "contact.html", {
@@ -147,13 +148,87 @@ def resources(request):
     """
     return render(request, "resources.html", {})
 
+
 def walkins(request):
     """
     Renders the walkins page template and handles the backend logic
     """
 
-    # return render(request, "walkins.html")
-    pass
+    # Get advisors
+    advisors = User.objects.filter(groups__name__in=['advisors']).all()
+
+    # Perform actions
+    if 'action' in request.POST:
+        walkin = Walkin.objects.filter(id=request.POST['id'])
+        if not walkin.exists():
+            walkin = None
+        else:
+            walkin = walkin.first()
+        if request.user.has_perm('meaao_site.view_walkin') or walkin.user_id == request.user.id:
+            if request.POST['action'] == 'walkin_save':
+                walkin.advisor_id = request.POST['advisor_id']
+                walkin.comments = request.POST['comments']
+                walkin.save()
+            elif request.POST['action'] == 'walkin_take':
+                Walkin.objects.filter(order__gt=max(0, walkin.order)).update(order=F('order') - 1)
+                walkin.order = -1
+                walkin.save()
+            elif request.POST['action'] == 'walkin_up' or request.POST['action'] == 'walkin_down':
+                move_direction = -1 if request.POST['action'] == 'walkin_up' else 1
+                Walkin.objects.filter(order=walkin.order + move_direction).update(order =F('order') - move_direction)
+                walkin.order = F('order') + move_direction
+                walkin.save()
+            elif request.POST['action'] == 'walkin_delete':
+                Walkin.objects.filter(order__gt=max(0, walkin.order)).update(order=F('order') - 1)
+                walkin.delete()
+
+    # Get current user's walkins
+    if request.user.has_perm('meaao_site.view_walkin'):
+        walkins_results = Walkin.objects.select_related('user').all().order_by('order', 'id')
+    else:
+        walkins_results = Walkin.objects.select_related('user').filter(user=request.user).all().order_by('order', 'id')
+    walkins = []
+    for walkin in walkins_results:
+        walkins.append({
+            'id': walkin.id,
+            'user_name': walkin.user.get_full_name(),
+            'advisor_id': walkin.advisor_id,
+            'comments': walkin.comments,
+            'order': walkin.order
+        })
+    
+    # Update API
+    if 'result' in request.GET:
+        return JsonResponse({
+            'walkins': walkins,
+            'user': {
+                'grants': list(request.user.get_all_permissions())
+            }
+        })
+    elif 'search_student' in request.GET:
+        query = request.GET['q']
+        users = list(User.objects.filter(Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query))[:20].only().values())
+        return JsonResponse({
+            'results': list(map(lambda user: {
+                'id': user['id'],
+                'text': user['username'],
+                'data': [user['username'], '{} {}'.format(user['first_name'], user['last_name'])]
+            }, users))
+        })
+        
+    # Add new walkin
+    if 'advisor' in request.POST and (len(walkins) == 0 or request.user.has_perm('meaao_site.view_walkin')):
+        new_walkin = Walkin(
+            user=User.objects.get(id=request.POST['student'] if request.user.has_perm('meaao_site.view_walkin') else request.user.id),
+            advisor=User.objects.get(id=request.POST['advisor']),
+            comments=request.POST['comments'],
+            order=Walkin.objects.latest('order').order + 1
+        )
+        new_walkin.save()
+
+    return render(request, "walkins.html", {
+        'advisors': advisors
+    })
 
 
 # Utility Functions

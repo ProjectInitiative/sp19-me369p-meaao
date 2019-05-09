@@ -1,0 +1,121 @@
+<!-- <?php
+// Add new walkin
+if (isset($_POST['advisor']) && in_array($_POST['advisor'], array_map(function ($a) {return $a['id'];}, $advisors)) && ($walkins_accessother || sizeof($walkins) == 0)) {
+    // Find last order
+    $statement = $DB_CONNECTION->prepare('SELECT MAX(`order`) FROM `walkins`;');
+    $statement->execute();
+    $last_order = $statement->fetch()['MAX(`order`)'];
+    // Add new walkin
+    $statement = $DB_CONNECTION->prepare('INSERT INTO `walkins` (`id`, `user_id`, `advisor_id`, `comments`, `order`) VALUES (:id, :user_id, :advisor_id, :comments, :order);');
+    $statement->execute([
+        'id'=>$GLOBALS['NANOID']->generateId(),
+        'user_id'=>$walkins_accessother ? $_POST['student'] : $AUTHENTICATED_USER['id'],
+        'advisor_id'=>$_POST['advisor'],
+        'comments'=>$_POST['comments'],
+        'order'=>isset($last_order) ? (int)$last_order + 1 : 0
+    ]);
+}
+?> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MEAAO</title>
+{% include 'bootstrap.html' %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4/dist/css/select2.min.css">
+    <script src="https://cdn.jsdelivr.net/combine/npm/vue@2,npm/select2@4"></script>
+    <script type="text/javascript" src="/static/js/walkins.js" defer></script>
+    <style type="text/css">
+    #results select,
+    #results textarea {
+        min-width: 20em;
+    }
+    </style>
+</head>
+<body class="pb-5">
+{% include 'navbar.html' %}
+{% csrf_token %}
+<div id="app" class="container mt-4">
+    <div class="row">
+        <h1 class="col-md-12">Walk-Ins</h1>
+    </div>
+    <div v-show="(Array.isArray(walkins) && walkins.length <= 0) || hasGrant('meaao_site.view_walkin')" class="row mb-5">
+        <form action="" method="post" class="col-md-12">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <label for="advisor">Advisor</label>
+                    <select name="advisor" id="advisor" class="form-control">
+                        {% comment %} <option value="any">Any Advisor</option> {% endcomment %}
+{% for advisor in advisors %}
+                        <option value="{{ advisor.id }}">{{ advisor.first_name }} {{ advisor.last_name }}</option>
+{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row" v-show="hasGrant('meaao_site.view_walkin')">
+                <div class="col-md-12">
+                    <label for="student">Student</label>
+                    <select name="student" id="student"></select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <label for="comments">Comments</label>
+                    <textarea name="comments" id="comments" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <input type="submit" value="Make Walk-In" class="btn btn-primary" />
+                    <input type="reset" value="Reset" class="btn" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div v-show="!Array.isArray(walkins)" class="mt-5 text-center">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div v-show="Array.isArray(walkins) && walkins.length > 0" class="row">
+        <table id="results" class="table table-responsive col-md-12">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Position</th>
+                    <th v-if="hasGrant('meaao_site.view_walkin')">Student</th>
+                    <th>Advisor</th>
+                    <th>Comments</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="walkin in walkins" v-bind:class="{'table-success': Number(walkin.order) == -1}">
+{% verbatim %}
+                    <td>{{ Number(walkin.order) >= 0 ? Number(walkin.order) + 1 : 'IN PROGRESS' }}</td>
+                    <td v-if="hasGrant('meaao_site.view_walkin')">{{ walkin.user_name }}</td>
+{% endverbatim %}
+                    <td>
+                        <select type="text" v-model="walkin.advisor_id" v-on:input="onInput(walkin)" v-on:change="onChange(walkin)" class="form-control form-control-sm">
+                            {% comment %} <option value="any">Any Advisor</option> {% endcomment %}
+{% for advisor in advisors %}
+                            <option value="{{ advisor.id }}">{{ advisor.first_name }} {{ advisor.last_name }}</option>
+{% endfor %}
+                        </select>
+                    </td>
+                    <td><textarea v-model="walkin.comments" v-on:input="onInput(walkin)" v-on:change="onChange(walkin)" class="form-control form-control-sm"></textarea></td>
+                    <td class="btn-group">
+                        <button class="btn btn-sm btn-success" v-show="Number(walkin.order) >= 0 && (hasGrant('meaao_site.view_walkin'))" v-on:click="post({action: 'walkin_take', id: walkin.id})">Take</button>
+                        <button class="btn btn-sm btn-danger" v-on:click="post({action: 'walkin_delete', id: walkin.id})">Delete</button>
+                        <button class="btn btn-sm btn-primary" v-show="hasGrant('meaao_site.view_walkin')" v-bind:disabled="Number(walkin.order) <= 0" title="Move Up" v-on:click="post({action: 'walkin_up', id: walkin.id})">&uparrow;<span class="sr-only">Move Up</span></button>
+                        <button class="btn btn-sm btn-primary" v-show="hasGrant('meaao_site.view_walkin')" v-bind:disabled="Number(walkin.order) < 0 || !walkins.some(a => a.order > Number(walkin.order))" title="Move Down" v-on:click="post({action: 'walkin_down', id: walkin.id})">&downarrow;<span class="sr-only">Move Down</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
