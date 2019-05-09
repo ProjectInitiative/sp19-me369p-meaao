@@ -12,7 +12,7 @@
 
 ## Wiki
 
-For end user information please click [here](https://github.com/a-gu/sp19-me369p-meaao/wiki).
+Documentation and a site map with user instructions are contained on the [wiki](./wiki) for this repository.
 
 ## Objective
 
