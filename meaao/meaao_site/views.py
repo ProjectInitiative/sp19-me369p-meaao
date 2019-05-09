@@ -223,10 +223,10 @@ def walkins(request):
 
     # Add new walkin
     if ('advisor' in request.POST and
-            (user_walkins or request.user.has_perm('meaao_site.view_walkin'))):
+            (not user_walkins or request.user.has_perm('meaao_site.add_walkin'))):
         new_walkin = Walkin(
             user=User.objects.get(id=request.POST['student'] if request.user.has_perm(
-                'meaao_site.view_walkin') else request.user.id),
+                'meaao_site.add_walkin') else request.user.id),
             advisor=User.objects.get(id=request.POST['advisor']),
             comments=request.POST['comments'],
             order=(Walkin.objects.latest(
