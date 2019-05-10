@@ -1,21 +1,3 @@
-<!-- <?php
-// Add new walkin
-if (isset($_POST['advisor']) && in_array($_POST['advisor'], array_map(function ($a) {return $a['id'];}, $advisors)) && ($walkins_accessother || sizeof($walkins) == 0)) {
-    // Find last order
-    $statement = $DB_CONNECTION->prepare('SELECT MAX(`order`) FROM `walkins`;');
-    $statement->execute();
-    $last_order = $statement->fetch()['MAX(`order`)'];
-    // Add new walkin
-    $statement = $DB_CONNECTION->prepare('INSERT INTO `walkins` (`id`, `user_id`, `advisor_id`, `comments`, `order`) VALUES (:id, :user_id, :advisor_id, :comments, :order);');
-    $statement->execute([
-        'id'=>$GLOBALS['NANOID']->generateId(),
-        'user_id'=>$walkins_accessother ? $_POST['student'] : $AUTHENTICATED_USER['id'],
-        'advisor_id'=>$_POST['advisor'],
-        'comments'=>$_POST['comments'],
-        'order'=>isset($last_order) ? (int)$last_order + 1 : 0
-    ]);
-}
-?> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
